@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 class BuildList extends StatelessWidget {
-  const BuildList({super.key});
+  final List<Map<String, dynamic>> iteams =[];
+  final bool isColors;
+  BuildList({super.key, required this.isColors});
 
   @override
   Widget build(BuildContext context) {
     return  Card(
       child: ListView.builder(
-        itemCount: 10,
+        itemCount: iteams.length,
         itemBuilder: (context, index) {
           return const ListTile(
             title: Text("Earning", style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
