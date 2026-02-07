@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controller/controllers.dart';
 import '../coustom_widget/build_list.dart';
 import '../coustom_widget/build_summary_card.dart';
 
@@ -12,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final controller = Get.put(Controllers());
 
   @override
   void initState() {
@@ -75,10 +78,7 @@ class _HomeScreenState extends State<HomeScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                BuildList(isColors: true),
-                BuildList(isColors: false),
-              ],
+              children: [BuildList(isColors: true), BuildList(isColors: false)],
             ),
           ),
         ],
@@ -139,6 +139,8 @@ void _showOption(BuildContext context) {
 }
 
 void _showForm(BuildContext context, bool isEarning) {
+  final controller = Get.find<Controllers>();
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
@@ -184,15 +186,30 @@ void _showForm(BuildContext context, bool isEarning) {
                 border: OutlineInputBorder(),
               ),
             ),
-
             const SizedBox(height: 12),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Add"),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
+          ),
+          onPressed: () {
+            if (titleController.text.isEmpty || amountController.text.isEmpty) {
+              Get.snackbar("Error", "All fields are required");
+              return;
+            }
+
+            controller.addItem(
+              isEarning: isEarning,
+              title: titleController.text,
+              amount: double.parse(amountController.text),
+            );
+
+            Navigator.pop(context); // bottom sheet close
+          },
+          child: const Text("Add"),
+        ),
           ],
         ),
       );
